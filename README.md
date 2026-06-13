@@ -1,53 +1,62 @@
-# Minecraft Plugin Site
+# HDD/SSD Rack met schuif-lock
 
-This project is a simple PHP/MySQL web application that allows an administrator to upload Minecraft plugins and provides a public download page.
+Een parametrisch OpenSCAD-ontwerp voor een 3.5"/2.5" drive-rack met meerdere
+bays en een **werkende schuif-lock (slider)** aan de voorzijde die elke tray
+vergrendelt.
 
-## Features
+## Bestand
 
-- **Admin login** with a fixed username and password defined in `config.php`.
-- **Plugin management** with rich text descriptions. Plugins have a logo, short description and long description. Existing plugins can receive multiple versions with Minecraft 1.16–1.21 support and changelogs.
-- **Update posts** section with rich text editing to publish news that appears on the home page.
-- **Public plugin listing** with search capability and download tracking.
-- **Download statistics** chart on the admin dashboard.
-- **Dynamic admin** interface that refreshes automatically after changes.
-- **Error reporting** in the admin area for easier debugging.
+- `drive_rack.scad` – het volledige, parametrische ontwerp (rack, tray en slider).
 
-## Files
+## Onderdelen
 
-- `index.php` – public landing page showing featured plugins, the latest update and plugin search.
-- `plugin.php` – individual plugin page with description and download tabs.
-- `functions.php` – helpers for site configuration.
-- `admin.php` – administration dashboard for managing plugins and updates.
-- `upload.php` – AJAX endpoint for plugin uploads.
-  Supports files up to 50MB.
-- `download.php` – serves jar files and records downloads.
-- `stats.php` – returns JSON statistics for the chart.
-- `db.php` – database connection helper.
-- `.htaccess` – simple configuration to ensure PHP files are executed.
-- `schema.sql` – SQL script to create the required tables.
-- `config.sample.php` – example configuration file.
+- **Rack (behuizing)** – stapelbare bays met geleiderails, ventilatie-uitsparing,
+  SATA-doorvoer en een keeper-kolom aan de rechterzijde met per bay een
+  grendel-pocket.
+- **Universele tray** – montagegaten voor zowel 3.5" HDD als 2.5" SSD,
+  ventilatiekanalen en een captive T-geleiding op het front voor de slider.
+- **Slider** – los printbaar T-profiel met duim-greep en een dead-bolt.
 
-## Database
+## Werking van de lock
 
-Run the queries in `schema.sql` to create the database schema. It contains the tables `plugins`, `plugin_versions`, `downloads`, `updates` and `settings`.
+1. De slider zit gevangen in een holle T-geleiding op het tray-front en kan
+   alleen zijwaarts (X) schuiven; hij kan niet losvallen.
+2. In de **vergrendelde** stand steekt de dead-bolt in de pocket van de
+   keeper-kolom op het rack. De voorwand van die pocket blokkeert de tray,
+   zodat deze niet naar voren kan worden getrokken.
+3. Schuif de slider naar binnen (**ontgrendeld**) en de bolt trekt terug binnen
+   de tray-omtrek, waarna de tray vrij naar buiten glijdt.
 
-## Configuration
+## Renderen
 
-Copy `config.sample.php` to `config.php` and adjust the database credentials and admin login details.
-Use the **Site config** section in the admin dashboard to change the site title and upload a logo, favicon or banner image. Featured plugins can be chosen from the existing list. The footer can display custom links by listing them as `label|url` pairs, one per line.
+Open `drive_rack.scad` in OpenSCAD en kies een onderdeel via de
+`render_mode`-parameter (Customizer of `-D`):
 
-## Notes
+| `render_mode`        | Resultaat                                             |
+|----------------------|-------------------------------------------------------|
+| `all`                | Volledige assemblage (rack + tray + slider)           |
+| `rack`               | Alleen de behuizing                                   |
+| `tray`               | Alleen de tray                                         |
+| `slider`             | Alleen de slider (printklaar)                          |
+| `lock_top_section`   | Horizontale doorsnede door de grendel                 |
+| `lock_side_section`  | Verticale doorsnede door grendel/keeper               |
 
-This project is intentionally minimal and meant as a starting point. Feel free to extend it with additional features such as version management, site configuration options or a dedicated plugin page as described in the comments within the code.
+Met `lock_state` (`locked` / `unlocked`) toon je de slider vergrendeld of
+ontgrendeld.
 
-### Site layout
-- **Top bar** with links to Home, Plugins and Updates
- - **Banner** image with a slideshow of three featured plugins
-- **Latest update** section showing the newest news post
-- **Recently updated** list of the five newest plugin versions
-- **Footer** with navigation and optional custom links
-- **Admin dashboard** with a light panel for creating plugins and managing their versions
-- Plugin and update pages use the same light panel styling
-- Plugin lists show each logo next to the name
-- Statistics page can filter by plugin, version and Minecraft version
-- Admin login screen shows the site logo
+Voorbeeld – exporteer de slider naar STL:
+
+```sh
+openscad -o slider.stl -D 'render_mode="slider"' drive_rack.scad
+```
+
+## Belangrijkste parameters
+
+De maten staan bovenin het bestand, gegroepeerd per sectie:
+
+- **Drive Dimensions** – HDD/SSD breedte en lengte.
+- **Tray & Bay Dimensions** – tray-hoogte, aantal bays en railmaten.
+- **Slider Lock Parameters** – grendelmaat, schuifslag en speling.
+- **Lock Keeper Column** – breedte en diepte van de keeper-kolom.
+
+Pas `clearance` en `sl_clear` aan op de toleranties van je eigen printer.
