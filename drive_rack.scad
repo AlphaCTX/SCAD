@@ -48,6 +48,7 @@ handle_y     = 2.0;    // hoe ver de greep vóór de geleiding uitsteekt (Y)
 /* [Lock Keeper Column] */
 col_w        = 6.0;    // breedte (X) van de keeper-kolom op het rack
 col_depth    = 11.0;   // diepte (Y) van de kolom, vóór het rack-front
+keeper_wall_t = 1.0;   // achterwand-dikte (X) die in de kolom blijft staan
 
 // --- Afgeleide hoofdmaten ---------------------------------------------------
 inner_w = hdd_w + (wall_thickness * 2) + (clearance * 2);
@@ -113,7 +114,7 @@ module drive_rack() {
             translate([right_inner_x - 0.2,
                        fl_y0 - sl_clear,
                        zc - bolt_h/2 - sl_clear])
-                cube([col_w - 1.0 + 0.2,             // laat ~1mm achterwand staan
+                cube([col_w - keeper_wall_t + 0.2,   // laat achterwand staan
                       bolt_t + sl_clear * 2,
                       bolt_h + sl_clear * 2]);
         }
