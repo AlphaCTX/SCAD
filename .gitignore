@@ -1,2 +1,6 @@
-uploads/
-config.php
+# OpenSCAD / 3D-print build artefacten
+*.stl
+*.3mf
+*.amf
+*.gcode
+*.png
